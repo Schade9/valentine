@@ -300,7 +300,7 @@ export default function Home() {
               🌹 <strong>You + Me = Forever</strong> 🌹
             </p>
             <p className="my-4 mt-6 italic">
-              &quot;I love you more than yesterday, but less than tomorrow!&quot; 🍕❤️
+              &quot;I love you more than yesterday, but less than tomorrow!!&quot; 🍕❤️
             </p>
           </div>
         </div>
