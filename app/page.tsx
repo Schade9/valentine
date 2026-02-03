@@ -40,6 +40,7 @@ export default function Home() {
   const [escapeCount, setEscapeCount] = useState(0);
   const heartIdRef = useRef(0);
   const confettiIdRef = useRef(0);
+  const yesButtonRef = useRef<HTMLButtonElement>(null);
 
   // Create floating hearts
   useEffect(() => {
@@ -76,13 +77,41 @@ export default function Home() {
 
     const vw = window.innerWidth;
     const vh = window.innerHeight;
-    const btnWidth = 120;
-    const btnHeight = 50;
+    const noBtnWidth = 180;
+    const noBtnHeight = 70;
+    const padding = 20;
 
-    const maxX = vw - btnWidth - 20;
-    const maxY = vh - btnHeight - 20;
-    const newX = Math.random() * maxX;
-    const newY = Math.random() * maxY;
+    // Get Yes button position to avoid it
+    const yesBtn = yesButtonRef.current;
+    const yesRect = yesBtn?.getBoundingClientRect();
+
+    const maxX = vw - noBtnWidth - padding;
+    const maxY = vh - noBtnHeight - padding;
+
+    // Generate position that doesn't overlap with Yes button
+    let newX: number;
+    let newY: number;
+    let attempts = 0;
+    const maxAttempts = 50;
+
+    do {
+      newX = Math.random() * maxX;
+      newY = Math.random() * maxY;
+      attempts++;
+
+      // Check if this position overlaps with Yes button
+      if (yesRect) {
+        const wouldOverlap =
+          newX < yesRect.right + 20 &&
+          newX + noBtnWidth > yesRect.left - 20 &&
+          newY < yesRect.bottom + 20 &&
+          newY + noBtnHeight > yesRect.top - 20;
+
+        if (!wouldOverlap) break;
+      } else {
+        break;
+      }
+    } while (attempts < maxAttempts);
 
     setNoButtonStyle({
       position: "fixed",
@@ -230,6 +259,7 @@ export default function Home() {
 
         <div className="flex gap-10 flex-wrap justify-center items-center min-h-[100px] relative">
           <button
+            ref={yesButtonRef}
             onClick={handleYes}
             className="group relative px-20 py-8 font-[var(--font-quicksand)] text-2xl font-bold border-none rounded-full cursor-pointer uppercase tracking-widest text-white transition-transform duration-300 hover:scale-110 overflow-hidden animate-[glowPulse_2s_ease-in-out_infinite]"
             style={{
